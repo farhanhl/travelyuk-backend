@@ -6,30 +6,38 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'nama_lengkap' => 'required|string|max:255',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'nomor_telfon' => 'required|string|max:15',
-            'is_admin' => 'required|boolean',
-        ]);
+        try {
+            $request->validate([
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'nama_lengkap' => 'required|string|max:255',
+                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+                'nomor_telfon' => 'required|string|max:15',
+                'is_admin' => 'required|boolean',
+            ]);
 
-        $user = User::create([
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'nama_lengkap' => $request->nama_lengkap,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'nomor_telfon' => $request->nomor_telfon,
-            'is_admin' => $request->is_admin,
-        ]);
+            $user = User::create([
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'nama_lengkap' => $request->nama_lengkap,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'nomor_telfon' => $request->nomor_telfon,
+                'is_admin' => $request->is_admin,
+            ]);
 
-        return response()->json(['message' => 'User registered successfully!'], 201);
+            return response()->json(['message' => 'User registered successfully!'], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Email sudah terdaftar',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 
     public function login(Request $request)
@@ -53,7 +61,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
         return response()->json(['message' => 'Logout successful!'], 200);

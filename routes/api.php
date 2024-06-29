@@ -18,12 +18,26 @@ use App\Http\Controllers\SchedulesController;
 |
 */
 
+// Auth
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout']);
-Route::post('add_schedule', [SchedulesController::class, 'store']);
-Route::post('add_order', [OrdersController::class, 'store']);
+// End Of Auth Section
+
+// Schedule
 Route::get('get_schedules', [SchedulesController::class, 'index']);
+Route::post('add_schedule', [SchedulesController::class, 'store']);
+Route::post('search_schedules', [SchedulesController::class, 'searchSchedule']);
+// End Of Schedule Secntion
+
+// Order
 Route::get('get_orders', [OrdersController::class, 'index']);
-Route::put('/orders/{order}', [OrdersController::class, 'updatePaymentStatus']);
+Route::get('get_order/{user_id}', [OrdersController::class, 'getOrder']);
+Route::get('get_orders/{user_id}', [OrdersController::class, 'getOrdersByUser']);
+Route::post('add_order', [OrdersController::class, 'store']);
+Route::put('/change_status/{order}', [OrdersController::class, 'updateStatus']);
+// End Of Order Section
+
+// City
 Route::get('/get_cities', [CityController::class, 'index']);
+// End Of City Section

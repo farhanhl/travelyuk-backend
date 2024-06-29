@@ -15,8 +15,31 @@ class SchedulesController extends Controller
      */
     public function index(): JsonResponse
     {
-        $schedules = Schedule::take(5)->get();
+        $schedules = Schedule::latestFirst()->get();
         return response()->json(['schedules' => $schedules]);
+    }
+
+    public function searchSchedule(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'origin_city_id' => 'required|integer',
+                'destination_city_id' => 'required|integer',
+                'date' => 'required|date_format:Y-m-d',
+            ]);
+
+            $originCityId = $request->input('origin_city_id');
+            $destinationCityId = $request->input('destination_city_id');
+            $date = $request->input('date');
+
+            $schedules = Schedule::byCitiesAndDate($originCityId, $destinationCityId, $date)
+                                 ->latestFirst()
+                                 ->get();
+
+            return response()->json(['schedules' => $schedules]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e], 500);
+        }
     }
 
     /**

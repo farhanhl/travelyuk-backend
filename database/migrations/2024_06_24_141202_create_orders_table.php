@@ -17,7 +17,12 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('schedule_id')->constrained();
-            $table->string('payment_status');
+            $table->string('pax');
+            $table->string('price');
+            $table->boolean('is_paid')->default(false);
+            $table->boolean('is_payment_accepted')->default(false);
+            $table->boolean('is_refund')->default(false);
+            $table->boolean('is_refund_accepted')->default(false);
             $table->timestamps();
         });
     }

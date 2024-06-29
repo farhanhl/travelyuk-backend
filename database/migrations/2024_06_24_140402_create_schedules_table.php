@@ -20,7 +20,7 @@ class CreateSchedulesTable extends Migration
             $table->date('date');
             $table->time('departure_time');
             $table->string('bus_name');
-            $table->decimal('price', 10, 2);
+            $table->string('price');
             $table->timestamps();
         });
     }

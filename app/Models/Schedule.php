@@ -29,4 +29,18 @@ class Schedule extends Model
     {
         return $this->belongsTo(City::class, 'destination_city_id');
     }
+
+    public function scopeLatestFirst($query)
+{
+    return $query->orderBy('date', 'desc')->orderBy('departure_time', 'desc');
+}
+
+
+    public function scopeByCitiesAndDate($query, $originCityId, $destinationCityId, $date)
+    {
+        return $query->where('origin_city_id', $originCityId)
+                    ->where('destination_city_id', $destinationCityId)
+                    ->whereDate('date', $date)
+                    ->whereTime('departure_time', '>=', now()->format('H:i:s'));
+    }
 }
